@@ -4,7 +4,7 @@ tier: capability          # primitive | capability | blueprint
 maturity: experimental    # experimental | stable | deprecated
 description: Cognito user pool with hardened defaults, app clients, hosted UI domain, federated identity providers and Lambda triggers
 owners: [platform]
-upstream: null            # e.g. "terraform-aws-modules/s3-bucket/aws 5.17.0"
-pairs_with: null          # e.g. "terraform-google-gcs-bucket"
+upstream: null
+pairs_with: terraform-google-identity-platform
 registry_name: terraform-aws-cognito-user-pool
 deprecated: null          # { removal: YYYY-MM-DD, replacement: <repo> }
