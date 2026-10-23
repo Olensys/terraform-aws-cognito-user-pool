@@ -1,6 +1,6 @@
-# __NAME__
+# terraform-aws-cognito-user-pool
 
-__DESCRIPTION__
+Cognito user pool with hardened defaults, app clients, hosted UI domain, federated identity providers and Lambda triggers
 
 ## Opinions
 
@@ -10,7 +10,7 @@ __DESCRIPTION__
 
 ```hcl
 module "this" {
-  source = "git::https://github.com/Olensys/__NAME__.git?ref=v1.0.0"
+  source = "git::https://github.com/Olensys/terraform-aws-cognito-user-pool.git?ref=v1.0.0"
 
   name = "example"
   context = {
