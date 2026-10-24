@@ -1,7 +1,7 @@
 name: terraform-aws-cognito-user-pool
 cloud: aws          # aws | google | common
 tier: capability          # primitive | capability | blueprint
-maturity: experimental    # experimental | stable | deprecated
+maturity: stable    # experimental | stable | deprecated
 description: Cognito user pool with hardened defaults, app clients, hosted UI domain, federated identity providers and Lambda triggers
 owners: [platform]
 upstream: null
