@@ -9,11 +9,11 @@ terraform {
 module "this" {
   source = "../../"
 
-  name = "example-users"
+  name = "olensys-test-cognito"
   context = {
     organization = "olensys"
     environment  = "test"
-    application  = "example"
+    application  = "cognito"
     owner        = "platform"
     cost_center  = "eng"
   }
