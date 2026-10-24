@@ -20,17 +20,17 @@ Cognito user pool with hardened defaults, app clients, hosted UI domain, federat
 ## Usage
 
 ```hcl
-module "this" {
-  source = "git::https://github.com/Olensys/terraform-aws-cognito-user-pool.git?ref=v1.0.0"
+module "naming" {
+  source  = "git::https://github.com/Olensys/terraform-null-naming.git?ref=v1.0.1"
+  context = var.context
+}
 
-  name = "example"
-  context = {
-    organization = "olensys"
-    environment  = "dev"
-    application  = "example"
-    owner        = "platform"
-    cost_center  = "eng"
-  }
+module "cognito_user_pool" {
+  source  = "git::https://github.com/Olensys/terraform-aws-cognito-user-pool.git?ref=v1.0.1"
+  name    = module.naming.name
+  context = var.context
+
+  tags = module.naming.tags
 }
 ```
 
