@@ -259,3 +259,45 @@ run "test_name_length_validation" {
 
   expect_failures = [var.name]
 }
+
+run "test_tier_default_essentials" {
+  command = plan
+  assert {
+    condition     = aws_cognito_user_pool.this[0].user_pool_tier == "ESSENTIALS"
+    error_message = "user_pool_tier must default to ESSENTIALS."
+  }
+  assert {
+    condition     = aws_cognito_user_pool.this[0].user_pool_add_ons[0].advanced_security_mode == "OFF"
+    error_message = "advanced_security must default to OFF."
+  }
+}
+
+run "test_advanced_security_with_plus" {
+  command = plan
+  variables {
+    advanced_security = "ENFORCED"
+    user_pool_tier    = "PLUS"
+  }
+  assert {
+    condition     = aws_cognito_user_pool.this[0].user_pool_add_ons[0].advanced_security_mode == "ENFORCED" && aws_cognito_user_pool.this[0].user_pool_tier == "PLUS"
+    error_message = "ENFORCED on PLUS must be passed through."
+  }
+}
+
+run "test_advanced_security_requires_plus" {
+  command = plan
+  variables { advanced_security = "AUDIT" }
+  expect_failures = [output.id]
+}
+
+run "test_advanced_security_validation" {
+  command = plan
+  variables { advanced_security = "ON" }
+  expect_failures = [var.advanced_security]
+}
+
+run "test_tier_validation" {
+  command = plan
+  variables { user_pool_tier = "PREMIUM" }
+  expect_failures = [var.user_pool_tier]
+}

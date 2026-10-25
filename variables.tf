@@ -75,6 +75,26 @@ variable "mfa" {
   }
 }
 
+variable "advanced_security" {
+  description = "Cognito threat protection mode. AUDIT and ENFORCED require user_pool_tier = PLUS and are billed at the Plus rate."
+  type        = string
+  default     = "OFF"
+  validation {
+    condition     = contains(["OFF", "AUDIT", "ENFORCED"], var.advanced_security)
+    error_message = "advanced_security must be one of OFF, AUDIT, ENFORCED."
+  }
+}
+
+variable "user_pool_tier" {
+  description = "Cognito feature plan: LITE, ESSENTIALS or PLUS."
+  type        = string
+  default     = "ESSENTIALS"
+  validation {
+    condition     = contains(["LITE", "ESSENTIALS", "PLUS"], var.user_pool_tier)
+    error_message = "user_pool_tier must be one of LITE, ESSENTIALS, PLUS."
+  }
+}
+
 variable "email" {
   description = "Email sending configuration. Null uses the Cognito default sender. Set ses_source_arn to send through SES (from and reply_to are then applied)."
   type = object({
