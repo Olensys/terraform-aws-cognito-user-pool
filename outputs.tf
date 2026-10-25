@@ -1,6 +1,11 @@
 output "id" {
   description = "ID of the user pool. Null when create is false."
   value       = try(aws_cognito_user_pool.this[0].id, null)
+
+  precondition {
+    condition     = !var.create || var.advanced_security == "OFF" || var.user_pool_tier == "PLUS"
+    error_message = "advanced_security AUDIT or ENFORCED requires user_pool_tier = PLUS."
+  }
 }
 
 output "name" {

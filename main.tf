@@ -13,6 +13,7 @@ resource "aws_cognito_user_pool" "this" {
 
   name                     = var.name
   mfa_configuration        = var.mfa
+  user_pool_tier           = var.user_pool_tier
   username_attributes      = ["email"]
   auto_verified_attributes = ["email"]
   deletion_protection      = var.context.environment == "prod" ? "ACTIVE" : "INACTIVE"
@@ -35,7 +36,7 @@ resource "aws_cognito_user_pool" "this" {
   }
 
   user_pool_add_ons {
-    advanced_security_mode = "AUDIT"
+    advanced_security_mode = var.advanced_security
   }
 
   email_configuration {

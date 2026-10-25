@@ -5,7 +5,7 @@ Cognito user pool with hardened defaults, app clients, hosted UI domain, federat
 ## Opinions
 
 - Deletion protection is `ACTIVE` when `context.environment == "prod"`, otherwise `INACTIVE`.
-- Advanced security mode is `AUDIT`. `ENFORCED` is a paid tier and is not exposed in v1.
+- Threat protection is `OFF` and the plan is `ESSENTIALS` by default; opt into `AUDIT`/`ENFORCED` together with `PLUS`.
 - Sign-in is by email: `username_attributes = ["email"]`, `auto_verified_attributes = ["email"]`.
 - Account recovery is verified email only (priority 1).
 - MFA defaults to `OPTIONAL`; when not `OFF`, software token (TOTP) MFA is enabled. SMS MFA is not supported in v1. `ON` breaks passwordless and social flows, so it is opt-in.
@@ -68,6 +68,7 @@ No modules.
 | ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_context"></a> [context](#input\_context) | Deployment context used for naming, tagging and environment-dependent defaults. | <pre>object({<br/>    organization = string<br/>    environment  = string<br/>    application  = string<br/>    component    = optional(string)<br/>    owner        = string<br/>    cost_center  = string<br/>    extra_tags   = optional(map(string), {})<br/>  })</pre> | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | Resource name. Lowercase letters, digits and hyphens. | `string` | n/a | yes |
+| <a name="input_advanced_security"></a> [advanced\_security](#input\_advanced\_security) | Cognito threat protection mode. AUDIT and ENFORCED require user\_pool\_tier = PLUS and are billed at the Plus rate. | `string` | `"OFF"` | no |
 | <a name="input_clients"></a> [clients](#input\_clients) | App clients keyed by name. oauth\_flows may contain code, implicit, client\_credentials. | <pre>map(object({<br/>    callback_urls   = list(string)<br/>    logout_urls     = optional(list(string), [])<br/>    generate_secret = optional(bool, false)<br/>    oauth_flows     = optional(list(string), ["code"])<br/>    oauth_scopes    = optional(list(string), ["openid", "email", "profile"])<br/>    token_validity = optional(object({<br/>      access_min   = optional(number, 60)<br/>      id_min       = optional(number, 60)<br/>      refresh_days = optional(number, 30)<br/>    }), {})<br/>  }))</pre> | `{}` | no |
 | <a name="input_create"></a> [create](#input\_create) | Whether to create any resources. Set false to create nothing. | `bool` | `true` | no |
 | <a name="input_domain"></a> [domain](#input\_domain) | Hosted UI domain. Set exactly one of prefix (Cognito-hosted domain prefix) or custom\_domain (requires certificate\_arn, an ACM certificate in us-east-1). Null creates no domain. | <pre>object({<br/>    prefix          = optional(string)<br/>    custom_domain   = optional(string)<br/>    certificate_arn = optional(string)<br/>  })</pre> | `null` | no |
@@ -78,6 +79,7 @@ No modules.
 | <a name="input_password_policy"></a> [password\_policy](#input\_password\_policy) | Password policy. Defaults: minimum length 12, all four character classes required, temporary passwords valid 7 days. | <pre>object({<br/>    minimum_length                   = optional(number, 12)<br/>    require_lowercase                = optional(bool, true)<br/>    require_uppercase                = optional(bool, true)<br/>    require_numbers                  = optional(bool, true)<br/>    require_symbols                  = optional(bool, true)<br/>    temporary_password_validity_days = optional(number, 7)<br/>  })</pre> | `{}` | no |
 | <a name="input_schema"></a> [schema](#input\_schema) | Custom user pool attributes. type is one of String, Number, DateTime, Boolean. Schema cannot be changed in place after creation. | <pre>list(object({<br/>    name     = string<br/>    type     = string<br/>    required = optional(bool, false)<br/>    mutable  = optional(bool, true)<br/>  }))</pre> | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags merged onto every taggable resource, applied last. | `map(string)` | `{}` | no |
+| <a name="input_user_pool_tier"></a> [user\_pool\_tier](#input\_user\_pool\_tier) | Cognito feature plan: LITE, ESSENTIALS or PLUS. | `string` | `"ESSENTIALS"` | no |
 
 ## Outputs
 
