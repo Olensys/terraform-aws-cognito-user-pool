@@ -7,6 +7,10 @@
 
 * advanced_security and user_pool_tier inputs ([#5](https://github.com/Olensys/terraform-aws-cognito-user-pool/issues/5)) ([22753e1](https://github.com/Olensys/terraform-aws-cognito-user-pool/commit/22753e1289bc7a793822b84b60337b95a2ef7680))
 
+### Behaviour changes
+
+New pools default to `user_pool_tier = "ESSENTIALS"` with `advanced_security = "OFF"`. Pools created by 1.0.x were implicitly PLUS with AUDIT and will show an in-place update; set `advanced_security = "AUDIT"` and `user_pool_tier = "PLUS"` to keep the previous behaviour.
+
 ## [1.0.3](https://github.com/Olensys/terraform-aws-cognito-user-pool/compare/v1.0.2...v1.0.3) (2026-10-24)
 
 
