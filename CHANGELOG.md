@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/Olensys/terraform-aws-cognito-user-pool/compare/v1.0.3...v1.1.0) (2026-10-25)
+
+
+### Features
+
+* advanced_security and user_pool_tier inputs ([#5](https://github.com/Olensys/terraform-aws-cognito-user-pool/issues/5)) ([22753e1](https://github.com/Olensys/terraform-aws-cognito-user-pool/commit/22753e1289bc7a793822b84b60337b95a2ef7680))
+
 ## [1.0.3](https://github.com/Olensys/terraform-aws-cognito-user-pool/compare/v1.0.2...v1.0.3) (2026-10-24)
 
 
