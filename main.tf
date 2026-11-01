@@ -117,6 +117,18 @@ resource "aws_cognito_identity_provider" "this" {
     var.identity_providers[each.key].scopes == null ? {} : { authorize_scopes = join(" ", var.identity_providers[each.key].scopes) },
   )
   attribute_mapping = var.identity_providers[each.key].attribute_mapping
+
+  # Cognito fills in the provider's own endpoints after creation; without this every plan shows a diff.
+  lifecycle {
+    ignore_changes = [
+      provider_details["attributes_url"],
+      provider_details["attributes_url_add_attributes"],
+      provider_details["authorize_url"],
+      provider_details["oidc_issuer"],
+      provider_details["token_request_method"],
+      provider_details["token_url"],
+    ]
+  }
 }
 
 resource "aws_cognito_user_pool_client" "this" {
