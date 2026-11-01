@@ -46,6 +46,13 @@ resource "aws_cognito_user_pool" "this" {
     reply_to_email_address = try(var.email.reply_to, null)
   }
 
+  dynamic "user_attribute_update_settings" {
+    for_each = length(var.attributes_require_verification_before_update) > 0 ? [1] : []
+    content {
+      attributes_require_verification_before_update = var.attributes_require_verification_before_update
+    }
+  }
+
   dynamic "software_token_mfa_configuration" {
     for_each = var.mfa == "OFF" ? [] : [1]
     content {
@@ -64,8 +71,8 @@ resource "aws_cognito_user_pool" "this" {
       dynamic "string_attribute_constraints" {
         for_each = schema.value.type == "String" ? [1] : []
         content {
-          min_length = 0
-          max_length = 2048
+          min_length = schema.value.min_length
+          max_length = schema.value.max_length
         }
       }
     }
@@ -124,6 +131,7 @@ resource "aws_cognito_user_pool_client" "this" {
   allowed_oauth_flows                  = each.value.oauth_flows
   allowed_oauth_scopes                 = each.value.oauth_scopes
   allowed_oauth_flows_user_pool_client = true
+  explicit_auth_flows                  = each.value.explicit_auth_flows
   supported_identity_providers         = concat(["COGNITO"], nonsensitive(keys(var.identity_providers)))
   enable_token_revocation              = true
   prevent_user_existence_errors        = "ENABLED"

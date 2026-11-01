@@ -106,12 +106,14 @@ variable "email" {
 }
 
 variable "schema" {
-  description = "Custom user pool attributes. type is one of String, Number, DateTime, Boolean. Schema cannot be changed in place after creation."
+  description = "Custom user pool attributes. type is one of String, Number, DateTime, Boolean. min_length and max_length apply to String attributes. Schema cannot be changed in place after creation."
   type = list(object({
-    name     = string
-    type     = string
-    required = optional(bool, false)
-    mutable  = optional(bool, true)
+    name       = string
+    type       = string
+    required   = optional(bool, false)
+    mutable    = optional(bool, true)
+    min_length = optional(number, 0)
+    max_length = optional(number, 2048)
   }))
   default = []
   validation {
@@ -121,13 +123,15 @@ variable "schema" {
 }
 
 variable "clients" {
-  description = "App clients keyed by name. oauth_flows may contain code, implicit, client_credentials."
+  description = "App clients keyed by name. oauth_flows may contain code, implicit, client_credentials. explicit_auth_flows lists the ALLOW_* authentication flows; null keeps the Cognito default."
   type = map(object({
     callback_urls   = list(string)
     logout_urls     = optional(list(string), [])
     generate_secret = optional(bool, false)
     oauth_flows     = optional(list(string), ["code"])
     oauth_scopes    = optional(list(string), ["openid", "email", "profile"])
+    # Null leaves the flows to the Cognito default.
+    explicit_auth_flows = optional(list(string))
     token_validity = optional(object({
       access_min   = optional(number, 60)
       id_min       = optional(number, 60)
@@ -175,4 +179,14 @@ variable "tags" {
   description = "Tags merged onto every taggable resource, applied last."
   type        = map(string)
   default     = {}
+}
+
+variable "attributes_require_verification_before_update" {
+  description = "Attributes that must be verified before a change takes effect, e.g. [\"email\"]. Empty applies no setting."
+  type        = list(string)
+  default     = []
+  validation {
+    condition     = alltrue([for a in var.attributes_require_verification_before_update : contains(["email", "phone_number"], a)])
+    error_message = "attributes_require_verification_before_update entries must be email or phone_number."
+  }
 }

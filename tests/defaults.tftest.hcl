@@ -301,3 +301,72 @@ run "test_tier_validation" {
   variables { user_pool_tier = "PREMIUM" }
   expect_failures = [var.user_pool_tier]
 }
+
+run "test_client_explicit_auth_flows" {
+  command = plan
+
+  variables {
+    clients = {
+      web = { callback_urls = ["https://app.example.com/cb"], explicit_auth_flows = ["ALLOW_USER_SRP_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"] }
+      cli = { callback_urls = ["http://localhost:8080/cb"] }
+    }
+  }
+
+  assert {
+    condition     = length(aws_cognito_user_pool_client.this["web"].explicit_auth_flows) == 2
+    error_message = "explicit_auth_flows must be passed to the client."
+  }
+}
+
+run "test_schema_length_limits" {
+  command = plan
+
+  variables {
+    schema = [
+      { name = "given_name", type = "String", min_length = 1, max_length = 256 },
+      { name = "nickname", type = "String" },
+    ]
+  }
+
+  assert {
+    condition     = one([for s in aws_cognito_user_pool.this[0].schema : s if s.name == "given_name"]).string_attribute_constraints[0].max_length == "256"
+    error_message = "schema max_length must be passed through."
+  }
+
+  assert {
+    condition     = one([for s in aws_cognito_user_pool.this[0].schema : s if s.name == "nickname"]).string_attribute_constraints[0].max_length == "2048"
+    error_message = "schema max_length must default to 2048."
+  }
+}
+
+run "test_attribute_update_verification" {
+  command = plan
+
+  variables {
+    attributes_require_verification_before_update = ["email"]
+  }
+
+  assert {
+    condition     = aws_cognito_user_pool.this[0].user_attribute_update_settings[0].attributes_require_verification_before_update == toset(["email"])
+    error_message = "email must require verification before update."
+  }
+}
+
+run "test_attribute_update_unset_by_default" {
+  command = plan
+
+  assert {
+    condition     = length(aws_cognito_user_pool.this[0].user_attribute_update_settings) == 0
+    error_message = "No update setting is expected by default."
+  }
+}
+
+run "test_attribute_update_validation" {
+  command = plan
+
+  variables {
+    attributes_require_verification_before_update = ["username"]
+  }
+
+  expect_failures = [var.attributes_require_verification_before_update]
+}
