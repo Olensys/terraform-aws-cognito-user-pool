@@ -175,18 +175,18 @@ variable "lambda_triggers" {
   }
 }
 
+variable "attributes_require_verification_before_update" {
+  description = "Attributes that must be verified before a change takes effect. Only email is allowed, because the module auto-verifies email only. Empty applies no setting."
+  type        = list(string)
+  default     = []
+  validation {
+    condition     = alltrue([for a in var.attributes_require_verification_before_update : a == "email"])
+    error_message = "attributes_require_verification_before_update may only contain email; the module auto-verifies email only."
+  }
+}
+
 variable "tags" {
   description = "Tags merged onto every taggable resource, applied last."
   type        = map(string)
   default     = {}
-}
-
-variable "attributes_require_verification_before_update" {
-  description = "Attributes that must be verified before a change takes effect, e.g. [\"email\"]. Empty applies no setting."
-  type        = list(string)
-  default     = []
-  validation {
-    condition     = alltrue([for a in var.attributes_require_verification_before_update : contains(["email", "phone_number"], a)])
-    error_message = "attributes_require_verification_before_update entries must be email or phone_number."
-  }
 }

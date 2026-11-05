@@ -370,3 +370,13 @@ run "test_attribute_update_validation" {
 
   expect_failures = [var.attributes_require_verification_before_update]
 }
+
+run "test_attribute_update_rejects_phone_number" {
+  command = plan
+
+  variables {
+    attributes_require_verification_before_update = ["phone_number"]
+  }
+
+  expect_failures = [var.attributes_require_verification_before_update]
+}

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.0 (unreleased)
+
+### Bug Fixes
+
+* identity providers no longer show a diff on every plan: the provider endpoints Cognito fills in after creation (`attributes_url`, `attributes_url_add_attributes`, `authorize_url`, `oidc_issuer`, `token_request_method`, `token_url`) are now ignored
+
 ## [1.1.0](https://github.com/Olensys/terraform-aws-cognito-user-pool/compare/v1.0.3...v1.1.0) (2026-10-25)
 
 
