@@ -106,12 +106,14 @@ variable "email" {
 }
 
 variable "schema" {
-  description = "Custom user pool attributes. type is one of String, Number, DateTime, Boolean. Schema cannot be changed in place after creation."
+  description = "Custom user pool attributes. type is one of String, Number, DateTime, Boolean. min_length and max_length apply to String attributes. Schema cannot be changed in place after creation."
   type = list(object({
-    name     = string
-    type     = string
-    required = optional(bool, false)
-    mutable  = optional(bool, true)
+    name       = string
+    type       = string
+    required   = optional(bool, false)
+    mutable    = optional(bool, true)
+    min_length = optional(number, 0)
+    max_length = optional(number, 2048)
   }))
   default = []
   validation {
@@ -121,13 +123,15 @@ variable "schema" {
 }
 
 variable "clients" {
-  description = "App clients keyed by name. oauth_flows may contain code, implicit, client_credentials."
+  description = "App clients keyed by name. oauth_flows may contain code, implicit, client_credentials. explicit_auth_flows lists the ALLOW_* authentication flows; null keeps the Cognito default."
   type = map(object({
     callback_urls   = list(string)
     logout_urls     = optional(list(string), [])
     generate_secret = optional(bool, false)
     oauth_flows     = optional(list(string), ["code"])
     oauth_scopes    = optional(list(string), ["openid", "email", "profile"])
+    # Null leaves the flows to the Cognito default.
+    explicit_auth_flows = optional(list(string))
     token_validity = optional(object({
       access_min   = optional(number, 60)
       id_min       = optional(number, 60)
@@ -168,6 +172,16 @@ variable "lambda_triggers" {
       "define_auth_challenge", "create_auth_challenge", "verify_auth_challenge_response", "pre_token_generation", "user_migration",
     ], k)])
     error_message = "lambda_triggers keys must be valid Cognito trigger names (pre_sign_up, post_confirmation, pre_authentication, post_authentication, custom_message, define_auth_challenge, create_auth_challenge, verify_auth_challenge_response, pre_token_generation, user_migration)."
+  }
+}
+
+variable "attributes_require_verification_before_update" {
+  description = "Attributes that must be verified before a change takes effect. Only email is allowed, because the module auto-verifies email only. Empty applies no setting."
+  type        = list(string)
+  default     = []
+  validation {
+    condition     = alltrue([for a in var.attributes_require_verification_before_update : a == "email"])
+    error_message = "attributes_require_verification_before_update may only contain email; the module auto-verifies email only."
   }
 }
 
