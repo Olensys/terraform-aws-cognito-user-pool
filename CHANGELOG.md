@@ -12,7 +12,7 @@
 
 * tag the minimal example's resources through the naming module ([#10](https://github.com/Olensys/terraform-aws-cognito-user-pool/issues/10)) ([838341a](https://github.com/Olensys/terraform-aws-cognito-user-pool/commit/838341acbc0a9ea9a6ab8497ad6b1909bd076e78))
 
-## 1.2.0 (unreleased)
+## 1.2.0
 
 ### Bug Fixes
 
