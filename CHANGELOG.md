@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://github.com/Olensys/terraform-aws-cognito-user-pool/compare/v1.1.0...v1.2.0) (2026-11-14)
+
+
+### Features
+
+* client explicit_auth_flows, schema length limits and attribute update verification ([#8](https://github.com/Olensys/terraform-aws-cognito-user-pool/issues/8)) ([34ae3f3](https://github.com/Olensys/terraform-aws-cognito-user-pool/commit/34ae3f37290d3c8179e47b54f4465197f0661752))
+
+
+### Bug Fixes
+
+* tag the minimal example's resources through the naming module ([#10](https://github.com/Olensys/terraform-aws-cognito-user-pool/issues/10)) ([838341a](https://github.com/Olensys/terraform-aws-cognito-user-pool/commit/838341acbc0a9ea9a6ab8497ad6b1909bd076e78))
+
 ## 1.2.0 (unreleased)
 
 ### Bug Fixes
